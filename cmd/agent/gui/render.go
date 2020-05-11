@@ -6,8 +6,10 @@ import (
 	"expvar"
 	"html/template"
 	"io"
+	"path/filepath"
 	"strings"
 
+	"github.com/DataDog/datadog-agent/cmd/agent/common"
 	"github.com/DataDog/datadog-agent/pkg/autodiscovery"
 	"github.com/DataDog/datadog-agent/pkg/collector"
 	"github.com/DataDog/datadog-agent/pkg/collector/check"
@@ -90,14 +92,11 @@ func renderError(name string) (string, error) {
 func fillTemplate(w io.Writer, data Data, request string) error {
 	t := template.New(request + ".tmpl")
 	t.Funcs(fmap)
-	tmpl, err := Asset("templates/" + request + ".tmpl")
-	if err != nil {
-		return err
-	}
-	t, e := t.Parse(string(tmpl))
+	t, e := t.ParseFiles(filepath.Join(common.GetViewsPath(), "templates/"+request+".tmpl"))
 	if e != nil {
 		return e
 	}
+
 	e = t.Execute(w, data)
 	return e
 }

@@ -125,4 +125,3 @@ integrations-core/
 
 # file generated for templates
 pkg/status/templates.go
-cmd/agent/gui/templates.go
